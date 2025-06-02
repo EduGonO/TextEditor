@@ -12454,7 +12454,7 @@
     }
     return result;
   }
-  function toggleMark(markType, attrs = null, options) {
+  function toggleMark2(markType, attrs = null, options) {
     let removeWhenPresent = (options && options.removeWhenPresent) !== false;
     let enterAtoms = (options && options.enterInlineAtoms) !== false;
     let dropSpace = !(options && options.includeWhitespace);
@@ -13496,7 +13496,7 @@
       list_item: add2(listItem, { content: itemContent })
     });
   }
-  function wrapInList(listType, attrs = null) {
+  function wrapInList2(listType, attrs = null) {
     return function(state, dispatch) {
       let { $from, $to } = state.selection;
       let range = $from.blockRange($to);
@@ -14014,7 +14014,7 @@
     };
     for (let prop in options)
       passedOptions[prop] = options[prop];
-    return cmdItem(toggleMark(markType), passedOptions);
+    return cmdItem(toggleMark2(markType), passedOptions);
   }
   function linkItem(markType) {
     return new MenuItem({
@@ -14028,7 +14028,7 @@
       },
       run(state, dispatch, view) {
         if (markActive(state, markType)) {
-          toggleMark(markType)(state, dispatch);
+          toggleMark2(markType)(state, dispatch);
           return true;
         }
         openPrompt({
@@ -14041,7 +14041,7 @@
             title: new TextField({ label: "Title" })
           },
           callback(attrs) {
-            toggleMark(markType, attrs)(view.state, view.dispatch);
+            toggleMark2(markType, attrs)(view.state, view.dispatch);
             view.focus();
           }
         });
@@ -14049,7 +14049,7 @@
     });
   }
   function wrapListItem(nodeType, options) {
-    return cmdItem(wrapInList(nodeType, options.attrs), options);
+    return cmdItem(wrapInList2(nodeType, options.attrs), options);
   }
   function buildMenuItems(schema2) {
     let r = {};
@@ -14155,19 +14155,19 @@
     bind2("Mod-BracketLeft", lift2);
     bind2("Escape", selectParentNode);
     if (type = schema2.marks.strong) {
-      bind2("Mod-b", toggleMark(type));
-      bind2("Mod-B", toggleMark(type));
+      bind2("Mod-b", toggleMark2(type));
+      bind2("Mod-B", toggleMark2(type));
     }
     if (type = schema2.marks.em) {
-      bind2("Mod-i", toggleMark(type));
-      bind2("Mod-I", toggleMark(type));
+      bind2("Mod-i", toggleMark2(type));
+      bind2("Mod-I", toggleMark2(type));
     }
     if (type = schema2.marks.code)
-      bind2("Mod-`", toggleMark(type));
+      bind2("Mod-`", toggleMark2(type));
     if (type = schema2.nodes.bullet_list)
-      bind2("Shift-Ctrl-8", wrapInList(type));
+      bind2("Shift-Ctrl-8", wrapInList2(type));
     if (type = schema2.nodes.ordered_list)
-      bind2("Shift-Ctrl-9", wrapInList(type));
+      bind2("Shift-Ctrl-9", wrapInList2(type));
     if (type = schema2.nodes.blockquote)
       bind2("Ctrl->", wrapIn(type));
     if (type = schema2.nodes.hard_break) {
@@ -14464,11 +14464,30 @@
     const editorContainer = document.getElementById("editor");
     if (!editorContainer)
       return;
-    new EditorView(editorContainer, {
+    const editor = new EditorView(editorContainer, {
       state: EditorState.create({
         doc: DOMParser.fromSchema(mySchema).parse(editorContainer),
         plugins: exampleSetup({ schema: mySchema })
       })
     });
+    window.editor = editor;
+    window.toggleMark = function(mark) {
+      const { state, dispatch } = editor;
+      const markType = mySchema.marks[mark];
+      if (!markType)
+        return;
+      const cmd = toggleMark(markType);
+      if (cmd)
+        cmd(state, dispatch);
+    };
+    window.wrapList = function(listType) {
+      const { state, dispatch } = editor;
+      const nodeType = mySchema.nodes[listType];
+      if (!nodeType)
+        return;
+      const cmd = wrapInList(nodeType);
+      if (cmd)
+        cmd(state, dispatch);
+    };
   });
 })();
