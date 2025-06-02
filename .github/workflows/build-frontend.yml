@@ -32,12 +32,14 @@ jobs:
           cp Frontend/public/bundle.js MyEditorPlayground.playgroundbook/Resources/
 
       - name: Commit and push updated resources
+        env:
+          TOKEN: ${{ secrets.GH_PAT }}
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "auto-builder"
+          git config user.email "builder@example.com"
           git add MyEditorPlayground.playgroundbook/Resources/index.html
           git add MyEditorPlayground.playgroundbook/Resources/bundle.js
           if ! git diff --cached --quiet; then
-            git commit -m "ci: update Playground Resources with latest build"
-            git push
+            git commit -m "ci: update Playground Resources with latest bundle"
+            git push https://$TOKEN@github.com/${{ github.repository }} HEAD:${{ github.ref_name }}
           fi
