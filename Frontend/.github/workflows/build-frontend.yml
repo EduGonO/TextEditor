@@ -1,0 +1,43 @@
+name: Build Frontend → Copy to Playground Resources
+
+on:
+  push:
+    paths:
+      - "Frontend/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        working-directory: Frontend
+        run: npm install
+
+      - name: Bundle with esbuild
+        working-directory: Frontend
+        run: npm run build
+
+      - name: Copy `index.html` and `bundle.js` into Playground Resources
+        run: |
+          mkdir -p MyEditorPlayground.playgroundbook/Resources
+          cp Frontend/public/index.html MyEditorPlayground.playgroundbook/Resources/
+          cp Frontend/public/bundle.js   MyEditorPlayground.playgroundbook/Resources/
+
+      - name: Commit built files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add MyEditorPlayground.playgroundbook/Resources/index.html
+          git add MyEditorPlayground.playgroundbook/Resources/bundle.js
+          if ! git diff --cached --quiet; then
+            git commit -m "ci: update Playground Resources with latest bundle"
+            git push
+          fi
