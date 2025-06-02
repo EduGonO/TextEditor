@@ -1,0 +1,19 @@
+{
+  "name": "eduTextEditor",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "node esbuild.config.js"
+  },
+  "dependencies": {
+    "prosemirror-state": "^1.5.0",
+    "prosemirror-view": "^1.24.0",
+    "prosemirror-model": "^1.18.0",
+    "prosemirror-schema-basic": "^1.2.0",
+    "prosemirror-schema-list": "^1.2.0",
+    "prosemirror-example-setup": "^1.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.19.0"
+  }
+}
