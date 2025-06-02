@@ -13,7 +13,8 @@ public struct EditorWebView: UIViewRepresentable {
 
     public func updateUIView(_ webView: WKWebView, context: Context) {
         guard
-            let htmlURL = Bundle.module.url(forResource: "index", withExtension: "html")
+          let bundle = Bundle(identifier: "org.swift.swift-playground"),
+          let htmlURL = bundle.url(forResource: "index", withExtension: "html")
         else { return }
 
         webView.loadFileURL(htmlURL, allowingReadAccessTo: htmlURL.deletingLastPathComponent())
