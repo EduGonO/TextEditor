@@ -14478,14 +14478,49 @@
       const cmd = toggleMark(type);
       cmd(editor.state, editor.dispatch);
     };
-    window.wrapList = function(listType) {
-      const type = mySchema.nodes[listType];
+    window.wrapList = function(nodeType) {
+      const { state, dispatch } = editor;
+      const listType = mySchema.nodes[nodeType];
+      if (!listType)
+        return;
+      const isInList = state.selection.$from.path.some((n) => n.type === listType);
+      if (isInList) {
+        const itemType = mySchema.nodes.list_item;
+        if (itemType) {
+          liftListItem(itemType)(state, dispatch);
+        }
+      } else {
+        wrapInList(listType)(state, dispatch);
+      }
+    };
+    window.wrapInBlock = function(nodeType) {
+      const type = mySchema.nodes[nodeType];
       if (!type)
         return;
-      const cmd = wrapInList(type);
+      const cmd = wrapIn(type);
       cmd(editor.state, editor.dispatch);
     };
-    console.log("\u2705 ProseMirror ready");
+    window.setBlock = function(nodeType, attrs = {}) {
+      const type = mySchema.nodes[nodeType];
+      if (!type)
+        return;
+      const cmd = setBlockType2(type, attrs);
+      cmd(editor.state, editor.dispatch);
+    };
+    window.undo = function() {
+      undo(editor.state, editor.dispatch);
+    };
+    window.redo = function() {
+      redo(editor.state, editor.dispatch);
+    };
+    window.insertLink = function(href) {
+      const { schema: schema2, state, dispatch } = editor;
+      const markType = schema2.marks.link;
+      if (!markType)
+        return;
+      const { from: from2, to } = state.selection;
+      dispatch(state.tr.addMark(from2, to, markType.create({ href })));
+    };
     window.editorReady = true;
   });
 })();
