@@ -12063,7 +12063,6 @@
   // src/schema.js
   var mySchema = new Schema({
     nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
-    nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
     marks: schema.spec.marks
   });
 
@@ -12528,19 +12527,13 @@
 
   // src/index.js
   console.log("\u2705 JS STARTED");
-  console.log("\u2705 JS STARTED");
   window.addEventListener("DOMContentLoaded", () => {
-    console.log("\u2705 DOM Ready, mySchema nodes:", Object.keys(mySchema.nodes || {}));
-    console.log("\u2705 mySchema marks:", Object.keys(mySchema.marks || {}));
     console.log("\u2705 DOM Ready, mySchema nodes:", Object.keys(mySchema.nodes || {}));
     console.log("\u2705 mySchema marks:", Object.keys(mySchema.marks || {}));
     const editorContainer = document.getElementById("editor");
     if (!editorContainer) {
       console.error("\u274C Editor container not found");
-    if (!editorContainer) {
-      console.error("\u274C Editor container not found");
       return;
-    }
     }
     const editor = new EditorView(editorContainer, {
       state: EditorState.create({
