@@ -14455,48 +14455,24 @@
 
   // src/schema.js
   var mySchema = new Schema({
-    nodes: addListNodes(
-      schema.spec.nodes.append({
-        todo_item: todoItem
-      }),
-      "paragraph block*",
-      "block"
-    ),
+    nodes: addListNodes(schema.spec.nodes, "paragraph block*", "block"),
     marks: schema.spec.marks
   });
-  var todoItem = {
-    attrs: { checked: { default: false } },
-    content: "paragraph",
-    toDOM: (node) => [
-      "li",
-      { "data-type": "todo-item" },
-      ["input", {
-        type: "checkbox",
-        checked: node.attrs.checked ? "checked" : null,
-        onclick: "window.toggleTodo && window.toggleTodo(this)"
-      }],
-      ["div", 0]
-    ],
-    parseDOM: [{
-      tag: "li[data-type=todo-item]",
-      getAttrs(dom) {
-        const input = dom.querySelector("input[type=checkbox]");
-        return { checked: input?.checked };
-      }
-    }]
-  };
 
   // src/index.js
+  console.log("\u2705 JS STARTED");
   window.addEventListener("DOMContentLoaded", () => {
+    console.log("\u2705 DOM Ready, mySchema nodes:", Object.keys(mySchema.nodes || {}));
+    console.log("\u2705 mySchema marks:", Object.keys(mySchema.marks || {}));
     const editorContainer = document.getElementById("editor");
-    if (!editorContainer)
+    if (!editorContainer) {
+      console.error("\u274C Editor container not found");
       return;
+    }
     const editor = new EditorView(editorContainer, {
       state: EditorState.create({
         doc: DOMParser.fromSchema(mySchema).parse(editorContainer),
-        plugins: [
-          exampleSetup({ schema: mySchema })
-        ]
+        plugins: exampleSetup({ schema: mySchema })
       })
     });
     window.editor = editor;
