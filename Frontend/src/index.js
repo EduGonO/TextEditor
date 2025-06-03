@@ -12,18 +12,24 @@ import { baseKeymap } from "prosemirror-commands";
 import { history } from "prosemirror-history";
 import { sinkListItem } from "prosemirror-schema-list";
 
-window.addEventListener("DOMContentLoaded", () => {
-  const editorContainer = document.getElementById("editor");
-  if (!editorContainer) return;
+console.log("✅ JS STARTED");
 
-  const editor = new EditorView(editorContainer, {
-    state: EditorState.create({
-      doc: DOMParser.fromSchema(mySchema).parse(editorContainer),
-      plugins: [
-        exampleSetup({ schema: mySchema })
-      ]
-    })
-  });
+window.addEventListener("DOMContentLoaded", () => {
+  console.log("✅ DOM Ready, mySchema nodes:", Object.keys(mySchema.nodes || {}));
+  console.log("✅ mySchema marks:", Object.keys(mySchema.marks || {}));
+
+  const editorContainer = document.getElementById("editor");
+  if (!editorContainer) {
+    console.error("❌ Editor container not found");
+    return;
+  }
+
+const editor = new EditorView(editorContainer, {
+  state: EditorState.create({
+    doc: DOMParser.fromSchema(mySchema).parse(editorContainer),
+    plugins: exampleSetup({ schema: mySchema })
+  })
+});
 
   window.editor = editor;
 
