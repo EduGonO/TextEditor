@@ -1,7 +1,6 @@
 import { EditorState } from "prosemirror-state";
 import { EditorView } from "prosemirror-view";
 import { DOMParser } from "prosemirror-model";
-import { exampleSetup } from "prosemirror-example-setup";
 import { toggleMark } from "prosemirror-commands";
 import { liftListItem, wrapInList } from "prosemirror-schema-list";
 import { mySchema } from "./schema";
@@ -27,7 +26,7 @@ window.addEventListener("DOMContentLoaded", () => {
 const editor = new EditorView(editorContainer, {
   state: EditorState.create({
     doc: DOMParser.fromSchema(mySchema).parse(editorContainer),
-    plugins: exampleSetup({ schema: mySchema })
+    plugins: []
   })
 });
 
